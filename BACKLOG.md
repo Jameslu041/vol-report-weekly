@@ -34,9 +34,9 @@
 - **验收**: 单元测试覆盖存储/加载/对比场景
 - **依赖**: api-client
 
-### report-generator
+### report-generator ✅
 
-> Issue: #4
+> Issue: #4 | PR: #13 | Status: Done
 
 实现报告生成器：Markdown 模板 + 6 章节分析逻辑 + 变化判断
 
