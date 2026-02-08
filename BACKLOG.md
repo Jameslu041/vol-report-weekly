@@ -16,9 +16,9 @@
 - **验收**: `go build ./cmd/report` 成功，运行后输出配置加载日志
 - **依赖**: 无
 
-### api-client
+### api-client ✅
 
-> Issue: #2
+> Issue: #2 | PR: #9 | Status: Done
 
 实现 Deribit DataLab API 客户端：HTTP 客户端 + 5 个接口 + 重试机制
 
