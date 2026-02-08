@@ -7,9 +7,9 @@
 **Epic branch**: `epic/vol-report-weekly`
 **Epic branch URL**: https://github.com/Jameslu041/vol-report-weekly/tree/epic/vol-report-weekly
 
-### project-scaffold
+### project-scaffold ✅
 
-> Issue: #1
+> Issue: #1 | PR: #7 | Status: Done
 
 建立项目骨架：cmd/report/main.go 入口 + internal/config 配置加载 + 结构化日志
 
