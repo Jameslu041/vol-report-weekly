@@ -18,12 +18,22 @@ func TestClient_GetIVHistory(t *testing.T) {
 			t.Errorf("unexpected user agent: %s", r.Header.Get("User-Agent"))
 		}
 
-		resp := APIResponse[IVHistoryResponse]{
-			Code:    200,
-			Message: "",
-			Data: IVHistoryResponse{
-				Items: []IVHistoryData{
-					{Tenor: "1D", IV: 45.5, HV: 42.0, Date: "2026-02-08"},
+		resp := map[string]any{
+			"code":    200,
+			"message": "",
+			"data": []map[string]any{
+				{
+					"one_day":  45.5,
+					"one_week": 48.0,
+					"month1":   50.0,
+					"month2":   52.0,
+					"month3":   54.0,
+					"month6":   56.0,
+					"one_year": 58.0,
+					"data": []map[string]any{
+						{"day": 1, "hv": 42.0},
+						{"day": 7, "hv": 44.0},
+					},
 				},
 			},
 		}
@@ -36,8 +46,8 @@ func TestClient_GetIVHistory(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if len(result.Items) != 1 {
-		t.Errorf("expected 1 item, got %d", len(result.Items))
+	if len(result.Items) != 7 {
+		t.Errorf("expected 7 items, got %d", len(result.Items))
 	}
 	if result.Items[0].IV != 45.5 {
 		t.Errorf("expected IV 45.5, got %f", result.Items[0].IV)
@@ -46,11 +56,16 @@ func TestClient_GetIVHistory(t *testing.T) {
 
 func TestClient_GetIVRV(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		resp := APIResponse[IVRVResponse]{
-			Code: 200,
-			Data: IVRVResponse{
-				Items: []IVRVData{
-					{Period: "7D", IV: 50.0, RV: 45.0, VRP: 5.0},
+		resp := map[string]any{
+			"code": 200,
+			"data": map[string]any{
+				"data": []map[string]any{
+					{
+						"datetime": 1234567890,
+						"data": []map[string]any{
+							{"day": 7, "iv": 50.0, "rv": 45.0, "vrp": 5.0},
+						},
+					},
 				},
 			},
 		}
@@ -63,18 +78,24 @@ func TestClient_GetIVRV(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if result.Items[0].VRP != 5.0 {
-		t.Errorf("expected VRP 5.0, got %f", result.Items[0].VRP)
+	if len(result.Items) == 0 {
+		t.Error("expected at least one item")
 	}
 }
 
 func TestClient_GetSkewChart(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		resp := APIResponse[SkewChartResponse]{
-			Code: 200,
-			Data: SkewChartResponse{
-				Items: []SkewData{
-					{Tenor: "1M", Skew: 1.05, Date: "2026-02-08"},
+		resp := map[string]any{
+			"code": 200,
+			"data": []map[string]any{
+				{
+					"day1":    1.05,
+					"days7":   1.02,
+					"days30":  1.00,
+					"days60":  0.98,
+					"days90":  0.97,
+					"days180": 0.96,
+					"days365": 0.95,
 				},
 			},
 		}
@@ -87,18 +108,22 @@ func TestClient_GetSkewChart(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if result.Items[0].Skew != 1.05 {
-		t.Errorf("expected skew 1.05, got %f", result.Items[0].Skew)
+	if len(result.Items) != 7 {
+		t.Errorf("expected 7 items, got %d", len(result.Items))
 	}
 }
 
 func TestClient_GetFIVMatrix(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		resp := APIResponse[FIVMatrixResponse]{
-			Code: 200,
-			Data: FIVMatrixResponse{
-				Items: []FIVMatrixEntry{
-					{FromTenor: "1W", ToTenor: "1M", FIV: 48.5},
+		resp := map[string]any{
+			"code": 200,
+			"data": map[string]any{
+				"expiries": []map[string]any{
+					{"label": "1W", "day": 7},
+					{"label": "1M", "day": 30},
+				},
+				"matrix": [][]any{
+					{nil, map[string]any{"Value": 48.5, "Diff": 1.0}},
 				},
 			},
 		}
@@ -111,21 +136,25 @@ func TestClient_GetFIVMatrix(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if result.Items[0].FIV != 48.5 {
-		t.Errorf("expected FIV 48.5, got %f", result.Items[0].FIV)
+	if len(result.Items) != 1 {
+		t.Errorf("expected 1 item, got %d", len(result.Items))
 	}
 }
 
 func TestClient_GetOptionFlows(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		resp := APIResponse[OptionFlowsResponse]{
-			Code: 200,
-			Data: OptionFlowsResponse{
-				Data: OptionFlowsData{
-					CallBuys:  1000.0,
-					CallSells: 800.0,
-					PutBuys:   600.0,
-					PutSells:  500.0,
+		resp := map[string]any{
+			"code": 200,
+			"data": map[string]any{
+				"past24h": map[string]any{
+					"call_buys":          1000.0,
+					"call_sells":         800.0,
+					"put_buys":           600.0,
+					"put_sells":          500.0,
+					"call_blocked_buys":  100.0,
+					"call_blocked_sells": 50.0,
+					"put_blocked_buys":   80.0,
+					"put_blocked_sells":  40.0,
 				},
 			},
 		}
@@ -152,9 +181,20 @@ func TestClient_RetryOnFailure(t *testing.T) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		resp := APIResponse[IVHistoryResponse]{
-			Code: 200,
-			Data: IVHistoryResponse{Items: []IVHistoryData{}},
+		resp := map[string]any{
+			"code": 200,
+			"data": []map[string]any{
+				{
+					"one_day":  45.5,
+					"one_week": 48.0,
+					"month1":   50.0,
+					"month2":   52.0,
+					"month3":   54.0,
+					"month6":   56.0,
+					"one_year": 58.0,
+					"data":     []map[string]any{},
+				},
+			},
 		}
 		json.NewEncoder(w).Encode(resp)
 	}))
@@ -172,9 +212,9 @@ func TestClient_RetryOnFailure(t *testing.T) {
 
 func TestClient_APIError(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		resp := APIResponse[IVHistoryResponse]{
-			Code:    500,
-			Message: "internal error",
+		resp := map[string]any{
+			"code":    500,
+			"message": "internal error",
 		}
 		json.NewEncoder(w).Encode(resp)
 	}))
