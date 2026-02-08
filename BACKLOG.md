@@ -52,9 +52,9 @@
 - **验收**: 集成测试验证消息发送成功（或 dry-run 模式下跳过发送）
 - **依赖**: report-generator
 
-### cli-complete
+### cli-complete ✅
 
-> Issue: #6
+> Issue: #6 | PR: #17 | Status: Done
 
 完善 CLI：cron 定时模式 + --dry-run + --date 参数
 

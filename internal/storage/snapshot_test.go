@@ -16,7 +16,7 @@ func TestStorage_SaveAndLoad(t *testing.T) {
 		Date: "2026-02-08",
 		IVHistory: &api.IVHistoryResponse{
 			Items: []api.IVHistoryData{
-				{Tenor: "1D", IV: 45.5, HV: 42.0, Date: "2026-02-08"},
+				{Tenor: "1D", IV: 45.5, HV: 42.0},
 			},
 		},
 		IVRV: &api.IVRVResponse{
