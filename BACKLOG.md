@@ -43,9 +43,9 @@
 - **验收**: 给定 mock 数据，生成的报告符合 blueprint 定义的格式
 - **依赖**: data-storage
 
-### telegram-sender
+### telegram-sender ✅
 
-> Issue: #5
+> Issue: #5 | PR: #15 | Status: Done
 
 实现 Telegram 发送：Bot API 调用 + 长消息分段 + 本地文件保存
 
