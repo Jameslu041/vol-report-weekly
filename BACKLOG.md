@@ -25,9 +25,9 @@
 - **验收**: 单元测试覆盖 5 个接口，mock server 验证重试逻辑
 - **依赖**: project-scaffold
 
-### data-storage
+### data-storage ✅
 
-> Issue: #3
+> Issue: #3 | PR: #11 | Status: Done
 
 实现数据快照存储：JSON 文件读写 + 历史数据加载
 
